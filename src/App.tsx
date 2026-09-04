@@ -29,7 +29,7 @@ const products: Product[] = [
     features: ["Post-death camera", "Clean transitions", "Config-ready"],
     accent: "#4f8cff",
     image: "/images/cfx-zr-deathcam.webp",
-    gallery: ["/images/cfx-zr-deathcam.webp", "/images/cfx-zr-deathcam-admin.webp"],
+    gallery: ["/images/cfx-zr-deathcam.png", "/images/cfx-zr-deathcam-admin.webp"],
   },
   {
     id: "cfx-zr-event",
