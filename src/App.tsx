@@ -28,7 +28,7 @@ const products: Product[] = [
     version: "FiveM resource",
     features: ["Post-death camera", "Clean transitions", "Config-ready"],
     accent: "#4f8cff",
-    image: "/images/cfx-zr-deathcam.webp",
+    image: "/images/cfx-zr-deathcam.png",
     gallery: ["/images/cfx-zr-deathcam.png", "/images/cfx-zr-deathcam-admin.webp"],
   },
   {
