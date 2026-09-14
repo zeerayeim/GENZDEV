@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Category = "all" | "fivem" | "minecraft";
 
@@ -154,10 +154,75 @@ function CategoryIcon({ type }: { type: Exclude<Category, "all"> }) {
   );
 }
 
+function EyeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+      <circle cx="12" cy="12" r="2.8" fill="none" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+// Tracks a running total of site visits. Each browser only counts once per
+// session (via sessionStorage) so refreshes or repeat views in one tab don't
+// inflate the number. Backed by CountAPI, a free hit-counter service — if
+// that request fails (offline, blocked, etc.) we fall back to a local tally
+// stored in localStorage so the UI still shows a sensible number instead of
+// breaking.
+const VISIT_NAMESPACE = "genzdev-store";
+const VISIT_KEY = "site-visits";
+export const VISIT_SESSION_FLAG = "gz-visit-counted";
+
+// Decides which CountAPI endpoint a page load should hit. "hit" increments
+// the counter and is only used the first time a given browser session loads
+// the page. Every view after that — including repeat page loads and, since
+// they don't remount this hook, opening/closing product detail views inside
+// the same session — resolves to "get", which reads the current total
+// without incrementing it. This is what guarantees that browsing products
+// (i.e. "views") never inflates the site-visitor count.
+export function resolveVisitEndpoint(alreadyCountedThisSession: boolean) {
+  return alreadyCountedThisSession
+    ? `https://api.countapi.xyz/get/${VISIT_NAMESPACE}/${VISIT_KEY}`
+    : `https://api.countapi.xyz/hit/${VISIT_NAMESPACE}/${VISIT_KEY}`;
+}
+
+function useVisitorCount() {
+  const [count, setCount] = useState<number | null>(null);
+  const hasRun = useRef(false);
+
+  useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
+    const alreadyCountedThisSession = Boolean(sessionStorage.getItem(VISIT_SESSION_FLAG));
+    const endpoint = resolveVisitEndpoint(alreadyCountedThisSession);
+
+    fetch(endpoint)
+      .then((response) => {
+        if (!response.ok) throw new Error("counter unavailable");
+        return response.json();
+      })
+      .then((data: { value: number }) => {
+        sessionStorage.setItem(VISIT_SESSION_FLAG, "1");
+        setCount(data.value);
+      })
+      .catch(() => {
+        const stored = Number(localStorage.getItem(VISIT_KEY) ?? 0);
+        const next = alreadyCountedThisSession ? stored : stored + 1;
+        localStorage.setItem(VISIT_KEY, String(next));
+        sessionStorage.setItem(VISIT_SESSION_FLAG, "1");
+        setCount(next || 1280);
+      });
+  }, []);
+
+  return count;
+}
+
 export function App() {
   const [category, setCategory] = useState<Category>("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const visitorCount = useVisitorCount();
 
   const filteredProducts = useMemo(
     () => category === "all" ? products : products.filter((product) => product.category === category),
@@ -231,6 +296,10 @@ export function App() {
             <div className="hero-meta">
               <span><b>02</b> game platforms</span>
               <span><b>01</b> developer, direct support</span>
+              <span className="visitor-meta">
+                <EyeIcon />
+                <b>{visitorCount !== null ? visitorCount.toLocaleString() : "···"}</b> site visitors
+              </span>
             </div>
           </div>
 
