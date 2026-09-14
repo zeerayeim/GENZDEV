@@ -209,6 +209,14 @@ export function App() {
       </header>
 
       <main id="top">
+        <section className="promo-banner" aria-label="GENZDEV developer banner">
+          <img
+            src="/images/zeeradev-banner.webp"
+            alt="ZeeRa[zR] — GENZDEV full stack developer, coding at a neon-lit desk"
+            loading="eager"
+          />
+        </section>
+
         <section className="hero">
           <div className="hero-copy">
             <div className="status-pill"><i /> Store systems online</div>

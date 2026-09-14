@@ -1,0 +1,17 @@
+{
+  "status": "disconnected",
+  "healthState": "disconnected",
+  "serverReachable": false,
+  "clientMounted": false,
+  "clientLastToolCallAt": null,
+  "clientLastConnectedAt": null,
+  "clientLastActivityAt": null,
+  "lastActivityKind": null,
+  "clientLastClientName": null,
+  "lastToolName": null,
+  "detail": "stdio probe skipped — periodic refresh never spawns a probe; run \"Continuity: Check MCP Health\" for a live check",
+  "checkedAt": "2026-09-14T15:31:26.771Z",
+  "serverPath": "c:\\Users\\ASUS\\.vscode\\extensions\\hackerware.continuity-ultimate-3.0.162\\packages\\mcp-server\\dist\\index.js",
+  "error": "stdio probe skipped — periodic refresh never spawns a probe; run \"Continuity: Check MCP Health\" for a live check",
+  "transport": "stdio"
+}
