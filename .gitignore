@@ -1,9 +1,7 @@
-@"
-node_modules/
 dist/
 .env
 .env.*
 SESSION_HANDOFF.md
 .continuity/
 .mcp.json
-"@ | Set-Content .gitignore
+node_modules/
