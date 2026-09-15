@@ -163,6 +163,38 @@ function EyeIcon() {
   );
 }
 
+// Loops through a list of banner images forever, crossfading to the next
+// one on a fixed interval. Used for the hero promo banner so it can cycle
+// between multiple creatives (e.g. zeeradev-banner + zRdevdumper) without
+// any manual interaction.
+type BannerImage = { src: string; alt: string };
+
+function RotatingBanner({ images, intervalMs = 500 }: { images: BannerImage[]; intervalMs?: number }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length < 2) return;
+    const id = setInterval(() => {
+      setIndex((current) => (current + 1) % images.length);
+    }, intervalMs);
+    return () => clearInterval(id);
+  }, [images.length, intervalMs]);
+
+  return (
+    <section className="promo-banner" aria-label="GENZDEV developer banner">
+      {images.map((image, i) => (
+        <img
+          key={image.src}
+          src={image.src}
+          alt={image.alt}
+          loading={i === 0 ? "eager" : "lazy"}
+          className={`promo-banner-slide${i === index ? " is-active" : ""}`}
+        />
+      ))}
+    </section>
+  );
+}
+
 // Tracks a running total of site visits. Each browser only counts once per
 // session (via sessionStorage) so refreshes or repeat views in one tab don't
 // inflate the number. Backed by CountAPI, a free hit-counter service — if
@@ -274,13 +306,13 @@ export function App() {
       </header>
 
       <main id="top">
-        <section className="promo-banner" aria-label="GENZDEV developer banner">
-          <img
-            src="/images/zeeradev-banner.webp"
-            alt="ZeeRa[zR] — GENZDEV full stack developer, coding at a neon-lit desk"
-            loading="eager"
-          />
-        </section>
+        <RotatingBanner
+          images={[
+            { src: "/images/zeeradev-banner.webp", alt: "ZeeRa[zR] — GENZDEV full stack developer, coding at a neon-lit desk" },
+            { src: "/images/zRdevdumper.png", alt: "zRdevDumper — build, deploy, download developer tool" },
+          ]}
+          intervalMs={5000}
+        />
 
         <section className="hero">
           <div className="hero-copy">

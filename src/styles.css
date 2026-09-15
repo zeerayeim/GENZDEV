@@ -88,14 +88,26 @@ a { color: inherit; text-decoration: none; }
 .menu-button { display: none; }
 
 .promo-banner {
+  position: relative;
   width: min(1400px, calc(100% - 64px));
   margin: 28px auto 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 18px;
   box-shadow: 0 24px 60px rgba(5, 12, 26, .45);
+  aspect-ratio: 2048 / 758;
 }
 .promo-banner img { display: block; width: 100%; height: auto; }
+.promo-banner-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.promo-banner-slide.is-active { opacity: 1; }
 
 .hero {
   display: grid;
